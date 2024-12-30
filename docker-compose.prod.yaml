@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  python:
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile
+    image: parking_export_bills_app:latest
+    container_name: parking_export_bills_app
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./db-data:/usr/src/app/db-data
