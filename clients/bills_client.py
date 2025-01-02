@@ -49,11 +49,11 @@ class BillsAPIClient:
                     
                     response_data.append(obj)
                 else:
-                    logging.error(f"Failed to send data to Bills: {response.json()}")
+                    logging.error(f"Failed to send data to Bills: {response.json()}, Object: {obj}")
                     time.sleep(2)
 
             except Exception as e:
-                logging.error(f"Failed to send data to Bills: {e}")
+                logging.error(f"Failed to send data to Bills: {e}, Object: {obj}")
                 time.sleep(2)
 
         return response_data
