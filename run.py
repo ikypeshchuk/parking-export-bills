@@ -104,7 +104,7 @@ class ParkingDataProcessor:
             'payments': [
                 {
                     'type': BillPaymentTypes.get_type(row['TYPE_PAY']),
-                    'value': row['PAYMENT_MONEY'] / 100
+                    'value': (row['PAYMENT_MONEY'] - row['DISCOUNT']) / 100
                 }
             ]
         }
