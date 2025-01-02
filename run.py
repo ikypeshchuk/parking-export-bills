@@ -96,7 +96,7 @@ class ParkingDataProcessor:
             'items': [
                 {
                     'name': f'Оплата парковки',
-                    'price': (row['PAYMENT_MONEY'] - row['DISCOUNT']),
+                    'price': (row['PAYMENT_MONEY'] - row['DISCOUNT']) / 100,
                     'quantity': 1
                 }
             ],
