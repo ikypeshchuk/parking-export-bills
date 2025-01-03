@@ -174,27 +174,30 @@ class ParkingDataProcessor:
             return result[0] if result else 0
 
     def _mark_batch_as_sent(self, batch: List[JsonDict]) -> None:
-        """Mark batch records as processed."""
         with sqlite3.connect(self.config.sqlite_path) as conn:
             cursor = conn.cursor()
-            logging.info(f"Marking {len(batch)} records as processed...")
-            for record in batch:
-                cursor.execute(
-                    """INSERT INTO sent_checks (id, check_id, sent_timestamp)
-                    VALUES (?, ?, CURRENT_TIMESTAMP)""",
-                    (record['ID'], record['OPERATION_ID'])
-                )
-                cursor.execute(
-                    """UPDATE last_processed_operation 
-                    SET mysql_id = ?, operation_id = ?, 
-                    computed_timestamp = CURRENT_TIMESTAMP,
-                    computed_count = computed_count + 1 
-                    WHERE id = 1""",
-                    (record['ID'], record['OPERATION_ID'])
-                )
+            logging.info(f"Marking batch as sent: {len(batch)}")
+            # Підготовка даних для sent_checks
+            sent_data = [(r['ID'], r['OPERATION_ID']) for r in batch]
+            cursor.executemany(
+                "INSERT INTO sent_checks (id, check_id, sent_timestamp) VALUES (?, ?, CURRENT_TIMESTAMP)",
+                sent_data
+            )
+
+            # Підготовка даних для last_processed_operation
+            update_data = [(r['ID'], r['OPERATION_ID']) for r in batch]
+            cursor.executemany(
+                """UPDATE last_processed_operation 
+                SET mysql_id = ?, operation_id = ?,
+                computed_timestamp = CURRENT_TIMESTAMP,
+                computed_count = computed_count + 1 
+                WHERE id = 1""",
+                update_data
+            )
+            
             conn.commit()
-            logging.info(f"Batch marked {len(batch)} as processed")
-        
+            logging.info(f"Batch marked as sent: {len(batch)}")
+
     def run_scheduler(self):
         # Додаємо задачу до планувальника
         #schedule.every(self.config.task_interval).minutes.do(self.process_batch)
