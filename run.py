@@ -239,15 +239,15 @@ def main():
     for terminal_id, description, parking in TERMINAL_ASSOCIATIONS:
         processor.sqlite.save_terminal_association(description, parking, terminal_id)
 
-    processor.start()
+    processor.process_batch()
 
-    try:
-        while True:
-            time.sleep(10)  # Keep the main thread alive
-    except KeyboardInterrupt:
-        logging.info('Shutting down...')
-    except Exception as e:
-        logging.error(f'Unexpected error: {e}')
-
+    #try:
+    #    while True:
+    #        time.sleep(10)  # Keep the main thread alive
+    #except KeyboardInterrupt:
+    #    logging.info('Shutting down...')
+    #except Exception as e:
+    #    logging.error(f'Unexpected error: {e}')
+#
 if __name__ == '__main__':
     main()
