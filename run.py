@@ -177,6 +177,7 @@ class ParkingDataProcessor:
         """Mark batch records as processed."""
         with sqlite3.connect(self.config.sqlite_path) as conn:
             cursor = conn.cursor()
+            logging.info(f"Marking {len(batch)} records as processed...")
             for record in batch:
                 cursor.execute(
                     """INSERT INTO sent_checks (id, check_id, sent_timestamp)
@@ -192,6 +193,7 @@ class ParkingDataProcessor:
                     (record['ID'], record['OPERATION_ID'])
                 )
             conn.commit()
+            logging.info(f"Batch marked {len(batch)} as processed")
         
     def run_scheduler(self):
         # Додаємо задачу до планувальника
