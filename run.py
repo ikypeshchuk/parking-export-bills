@@ -109,7 +109,7 @@ class ParkingDataProcessor:
             ]
         }
 
-    def process_batch(self, rcount = 40) -> None:
+    def process_batch(self, rcount = 120) -> None:
         """Process and send batch of payment records."""
         try:
             self._update_sent_checks()
