@@ -125,7 +125,7 @@ class ParkingDataProcessor:
                     cursor.execute(
                         """SELECT * FROM payments_invoices 
                         WHERE ID > %s 
-                        ORDER BY ID ASC 
+                        ORDER BY ID DESC 
                         LIMIT %s""",
                         (last_id, self.config.batch_limit)
                     )

@@ -42,7 +42,6 @@ class BillsAPIClient:
                 
                 if response.status_code == 201:
                     logging.info(f"Successfully sent data to Bills: {response.json()}")
-                    time.sleep(0.100)
 
                     obj['ID'] = ID
                     obj['OPERATION_ID'] = OPERATION_ID
