@@ -109,9 +109,11 @@ class ParkingDataProcessor:
             ]
         }
 
-    def process_batch(self) -> None:
+    def process_batch(self, rcount = 40) -> None:
         """Process and send batch of payment records."""
         try:
+            self._update_sent_checks()
+            
             with pymysql.connect(
                 host=self.config.db_config.host,
                 user=self.config.db_config.user,
@@ -159,6 +161,9 @@ class ParkingDataProcessor:
                 self._mark_batch_as_sent(respotse_data)
 
                 batch_data = []
+            
+            if rcount > 0:
+                return self.process_batch(rcount - 1)
 
         except Exception as e:
             logging.error(f"Error processing batch: {e}")
