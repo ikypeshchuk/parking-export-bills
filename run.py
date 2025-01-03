@@ -125,7 +125,7 @@ class ParkingDataProcessor:
                     cursor.execute(
                         """SELECT * FROM payments_invoices 
                         WHERE ID > %s 
-                        ORDER BY ID DESC 
+                        ORDER BY ID ASC 
                         LIMIT %s""",
                         (last_id, self.config.batch_limit)
                     )
@@ -239,15 +239,15 @@ def main():
     for terminal_id, description, parking in TERMINAL_ASSOCIATIONS:
         processor.sqlite.save_terminal_association(description, parking, terminal_id)
 
-    processor.process_batch()
+    processor.start()
 
-    #try:
-    #    while True:
-    #        time.sleep(10)  # Keep the main thread alive
-    #except KeyboardInterrupt:
-    #    logging.info('Shutting down...')
-    #except Exception as e:
-    #    logging.error(f'Unexpected error: {e}')
+    try:
+        while True:
+            time.sleep(10)  # Keep the main thread alive
+    except KeyboardInterrupt:
+        logging.info('Shutting down...')
+    except Exception as e:
+        logging.error(f'Unexpected error: {e}')
 #
 if __name__ == '__main__':
     main()
