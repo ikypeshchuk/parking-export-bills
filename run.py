@@ -192,29 +192,26 @@ class ParkingDataProcessor:
                     (record['ID'], record['OPERATION_ID'])
                 )
             conn.commit()
-    
-def run_scheduler(self):
-    # Додаємо задачу до планувальника
-    schedule.every(self.config.task_interval).minutes.do(self.process_batch)
-    logging.info(f'Starting parking data processor at {datetime.now()}')
+        
+    def run_scheduler(self):
+        # Додаємо задачу до планувальника
+        schedule.every(self.config.task_interval).minutes.do(self.process_batch)
+        logging.info(f'Starting parking data processor at {datetime.now()}')
 
-    # Виконуємо перший запуск одразу
-    try:
-        logging.info("Running initial batch process...")
-        self.process_batch()  # Перший запуск одразу
+        # Виконуємо перший запуск одразу
+        try:
+            logging.info("Running initial batch process...")
+            self.process_batch()  # Перший запуск одразу
 
-        while True:
-            schedule.run_pending()
-            time.sleep(1)
-    except KeyboardInterrupt:
-        logging.info("Scheduler stopped by user (Ctrl+C)")
-    except Exception as e:
-        logging.error(f"Unexpected error in scheduler: {e}")
-        raise  # Проброс помилки для завершення програми
+            while True:
+                schedule.run_pending()
+                time.sleep(1)
+        except KeyboardInterrupt:
+            logging.info("Scheduler stopped by user (Ctrl+C)")
+        except Exception as e:
+            logging.error(f"Unexpected error in scheduler: {e}")
+            raise  # Проброс помилки для завершення програми
 
-    def start(self):
-        logging.info('Starting scheduler...')
-        self.run_scheduler()
 
 def setup_logging():
     logging.basicConfig(
@@ -248,7 +245,7 @@ def main():
     for terminal_id, description, parking in TERMINAL_ASSOCIATIONS:
         processor.sqlite.save_terminal_association(description, parking, terminal_id)
 
-    processor.start()
+    processor.run_scheduler()
 
     try:
         while True:
