@@ -196,16 +196,20 @@ class ParkingDataProcessor:
     def run_scheduler(self):
         schedule.every(self.config.task_interval).minutes.do(self.process_batch)
         logging.info(f'Starting parking data processor at {datetime.now()}')
-        
-        while True:
-            schedule.run_pending()
-            time.sleep(1)
+
+        try:
+            while True:
+                schedule.run_pending()
+                time.sleep(1)
+        except KeyboardInterrupt:
+            logging.info("Scheduler stopped by user (Ctrl+C)")
+        except Exception as e:
+            logging.error(f"Unexpected error in scheduler: {e}")
+            raise  # Проброс помилки для завершення програми
 
     def start(self):
-        scheduler_thread = Thread(target=self.run_scheduler, daemon=True)
-        scheduler_thread.start()
-        logging.info('Scheduler thread started')
-
+        logging.info('Starting scheduler...')
+        self.run_scheduler()
 
 def setup_logging():
     logging.basicConfig(
