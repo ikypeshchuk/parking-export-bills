@@ -162,8 +162,8 @@ class ParkingDataProcessor:
 
                 batch_data = []
             
-            if rcount > 0:
-                return self.process_batch(rcount - 1)
+            #if rcount > 0:
+            #    return self.process_batch(rcount - 1)
 
         except Exception as e:
             logging.error(f"Error processing batch: {e}")
