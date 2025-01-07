@@ -86,7 +86,7 @@ class ParkingDataProcessor:
             'POINT_OF_SALE': parking_number,
             'ID': row['ID'],
             'OPERATION_ID': row['OPERATION_ID'],
-            'date_payment': self._format_datetime(int(row['PAYMENT_TIME'])),
+            'date_payment': self._format_datetime(int(row['ENTRY_TIME'])),
             'description': (f"бокс: {point_of_sale}, "
                             f"час перебування: {duration_str}, "
                             f"час вїзду: {self._format_datetime(int(row['ENTRY_TIME']))}, "
