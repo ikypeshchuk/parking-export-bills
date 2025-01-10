@@ -184,10 +184,13 @@ class ParkingDataProcessor:
             logging.info(f"Marking batch as sent: {len(batch)}")
             # Підготовка даних для sent_checks
             sent_data = [(r['ID'], r['OPERATION_ID']) for r in batch]
-            cursor.executemany(
-                "INSERT INTO sent_checks (id, check_id, sent_timestamp) VALUES (?, ?, CURRENT_TIMESTAMP)",
-                sent_data
-            )
+            try:
+                cursor.executemany(
+                    "INSERT INTO sent_checks (id, check_id, sent_timestamp) VALUES (?, ?, CURRENT_TIMESTAMP)",
+                    sent_data
+                )
+            except sqlite3.IntegrityError:
+                logging.error("Error inserting sent checks data")
 
             # Підготовка даних для last_processed_operation
             update_data = [(r['ID'], r['OPERATION_ID']) for r in batch]
