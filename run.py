@@ -135,12 +135,12 @@ class ParkingDataProcessor:
 
             if not records:
                 logging.info("No new records to process")
-                return
+                pass
 
             batch_data = []
             for record in records:
                 if record['ID'] in self.sent_checks:
-                    continue
+                    logging.info(f"Skipping already sent record: {record['ID']}")
                 
                 processed_record = self.process_bills_data(record)
 
