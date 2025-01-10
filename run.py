@@ -162,8 +162,8 @@ class ParkingDataProcessor:
 
                 batch_data = []
             
-            if rcount > 0:
-                return self.process_batch(rcount - 1)
+            #if rcount > 0:
+            #    return self.process_batch(rcount - 1)
 
         except Exception as e:
             logging.error(f"Error processing batch: {e}")
@@ -208,8 +208,8 @@ class ParkingDataProcessor:
 
     def run_scheduler(self):
         # Додаємо задачу до планувальника
-        #schedule.every(self.config.task_interval).minutes.do(self.process_batch)
-        #logging.info(f'Starting parking data processor at {datetime.now()}')
+        schedule.every(self.config.task_interval).minutes.do(self.process_batch)
+        logging.info(f'Starting parking data processor at {datetime.now()}')
 
         # Виконуємо перший запуск одразу
         try:
