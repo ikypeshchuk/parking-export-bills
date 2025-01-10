@@ -135,7 +135,7 @@ class ParkingDataProcessor:
 
             if not records:
                 logging.info("No new records to process")
-                pass
+                return
 
             batch_data = []
             for record in records:
