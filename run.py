@@ -108,6 +108,25 @@ class ParkingDataProcessor:
                 }
             ]
         }
+    
+    def select_by_id(self, id: int) -> Dict:
+        with pymysql.connect(
+            host=self.config.db_config.host,
+            user=self.config.db_config.user,
+            password=self.config.db_config.password,
+            db=self.config.db_config.name,
+            port=self.config.db_config.port,
+            cursorclass=pymysql.cursors.DictCursor
+        ) as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(
+                    """SELECT * FROM payments_invoices 
+                    WHERE ID = %s""",
+                    (id)
+                )
+                record = cursor.fetchone()
+
+        return record
 
     def process_batch(self, rcount = 120) -> None:
         """Process and send batch of payment records."""
