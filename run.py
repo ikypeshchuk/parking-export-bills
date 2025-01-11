@@ -160,8 +160,6 @@ class ParkingDataProcessor:
 
             batch_data = []
             for record in records:
-                if record['ID'] in self.sent_checks:
-                    logging.info(f"Skipping already sent record: {record['ID']}")
                 
                 processed_record = self.process_bills_data(record)
 
