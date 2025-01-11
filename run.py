@@ -81,7 +81,9 @@ class ParkingDataProcessor:
             duration_str = f"{int(duration_hours)}г"
         else:
             duration_str = f"{int(remaining_minutes)}хв"
-    
+
+        pay_val = max(0, ((row['PAYMENT_MONEY'] - row['DISCOUNT']) / 100))
+        
         return {
             'POINT_OF_SALE': parking_number,
             'ID': row['ID'],
@@ -96,7 +98,7 @@ class ParkingDataProcessor:
             'items': [
                 {
                     'name': f'Оплата парковки',
-                    'price': (row['PAYMENT_MONEY'] + row['DISCOUNT']) / 100,
+                    'price': (row['PAYMENT_MONEY'] / 100) if pay_val < 0 else (row['DISCOUNT'] / 100),
                     'quantity': 1
                 }
             ],
@@ -104,7 +106,7 @@ class ParkingDataProcessor:
             'payments': [
                 {
                     'type': BillPaymentTypes.get_type(row['TYPE_PAY']),
-                    'value': row['PAYMENT_MONEY'] / 100,
+                    'value': pay_val,
                 }
             ]
         }
