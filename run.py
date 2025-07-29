@@ -281,7 +281,7 @@ def main():
 
     try:
         while True:
-            time.sleep(10)  # Keep the main thread alive
+            time.sleep(5)  # Keep the main thread alive
     except KeyboardInterrupt:
         logging.info('Shutting down...')
     except Exception as e:
