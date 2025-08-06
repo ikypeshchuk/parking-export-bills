@@ -178,11 +178,13 @@ class ParkingDataProcessor:
             if batch_data:  # Send remaining records
                 from pprint import pprint
                 #print('out', datetime.now(), batch_data)
+                logging.info(f"Sending remaining records: {len(batch_data)}")
                 respotse_data = self.client.send(batch_data)
+                logging.info(f"Sent remaining records: {len(respotse_data)}")
                 self._mark_batch_as_sent(respotse_data)
 
                 batch_data = []
-            
+
             if rcount > 0:
                 return self.process_batch(rcount - 1)
 
