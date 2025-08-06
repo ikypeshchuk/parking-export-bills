@@ -148,7 +148,7 @@ class ParkingDataProcessor:
                     cursor.execute(
                         """SELECT * FROM payments_invoices 
                         WHERE ID > %s 
-                        ORDER BY ID ASC 
+                        ORDER BY ID DESC 
                         LIMIT %s""",
                         (last_id, self.config.batch_limit)
                     )
@@ -195,7 +195,7 @@ class ParkingDataProcessor:
             cursor.execute("SELECT mysql_id FROM last_processed_operation WHERE id = 1")
             result = cursor.fetchone()
 
-            return result[0] if result else 0
+            return result[0] if result else 1749327
 
     def _mark_batch_as_sent(self, batch: List[JsonDict]) -> None:
         with sqlite3.connect(self.config.sqlite_path) as conn:
