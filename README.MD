@@ -67,3 +67,6 @@ Sqllite база містить данні про вже відправлені 
 
 ## Логування
 Лог, в проді в stdout, або тому ж каталозі PowerBiSentLog.log як(туди пишеться статус обробки і відправки, також ексепшени)
+
+## 2023-01-01
+UPDATE last_processed_operation SET mysql_id = 1749327, operation_id = 61672525811 WHERE id = 1;

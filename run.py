@@ -145,19 +145,21 @@ class ParkingDataProcessor:
             ) as conn:
                 with conn.cursor() as cursor:
                     last_id = self._get_last_processed_id()
-                    cursor.execute(
-                        """SELECT * FROM payments_invoices 
-                        WHERE ID > %s 
+                    smt = """SELECT * FROM payments_invoices 
+                        WHERE ID < {last_id} 
                         ORDER BY ID DESC 
-                        LIMIT %s""",
-                        (last_id, self.config.batch_limit)
+                        LIMIT {batch_limit}""".format(last_id=last_id, batch_limit=self.config.batch_limit)
+                    cursor.execute(
+                        smt
                     )
                     records = cursor.fetchall()
+                    logging.info(smt)
 
             if not records:
                 logging.info("No new records to process")
                 return
 
+            logging.info(f"Processing batch {len(records)}")
             batch_data = []
             for record in records:
                 
@@ -181,8 +183,8 @@ class ParkingDataProcessor:
 
                 batch_data = []
             
-            #if rcount > 0:
-            #    return self.process_batch(rcount - 1)
+            if rcount > 0:
+                return self.process_batch(rcount - 1)
 
         except Exception as e:
             logging.error(f"Error processing batch: {e}")
@@ -195,7 +197,7 @@ class ParkingDataProcessor:
             cursor.execute("SELECT mysql_id FROM last_processed_operation WHERE id = 1")
             result = cursor.fetchone()
 
-            return result[0] if result else 1749327
+            return result[0] if result else 740279
 
     def _mark_batch_as_sent(self, batch: List[JsonDict]) -> None:
         with sqlite3.connect(self.config.sqlite_path) as conn:
@@ -209,7 +211,7 @@ class ParkingDataProcessor:
                     sent_data
                 )
             except sqlite3.IntegrityError:
-                logging.error("Error inserting sent checks data")
+                logging.error("Error inserting sent checks data", exc_info=True)
 
             # Підготовка даних для last_processed_operation
             update_data = [(r['ID'], r['OPERATION_ID']) for r in batch]
@@ -277,15 +279,17 @@ def main():
     for terminal_id, description, parking in TERMINAL_ASSOCIATIONS:
         processor.sqlite.save_terminal_association(description, parking, terminal_id)
 
-    processor.run_scheduler()
+    processor.process_batch()
 
-    try:
-        while True:
-            time.sleep(5)  # Keep the main thread alive
-    except KeyboardInterrupt:
-        logging.info('Shutting down...')
-    except Exception as e:
-        logging.error(f'Unexpected error: {e}')
+    #processor.run_scheduler()
+    #try:
+    #    while True:
+    #        time.sleep(5)  # Keep the main thread alive
+    #except KeyboardInterrupt:
+    #    logging.info('Shutting down...')
+    #except Exception as e:
+    #    logging.error(f'Unexpected error: {e}')
 #
 if __name__ == '__main__':
     main()
+
