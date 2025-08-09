@@ -158,7 +158,8 @@ class ParkingDataProcessor:
                     cursor.execute(smt)
                     records = cursor.fetchall()
                     logging.info(smt)
-                    logging.info(f"Last processed ID: {_last_id}, rcount: {rcount}, records: {len(records)}, last_record: {records[-1]['ID']}")
+                    last_record_id = records[-1].get('ID', 0)
+                    logging.info(f"Last processed ID: {_last_id}, rcount: {rcount}, records: {len(records)}, last_record: {last_record_id}")
 
             if not records:
                 logging.info("No new records to process")
