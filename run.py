@@ -158,7 +158,10 @@ class ParkingDataProcessor:
                     cursor.execute(smt)
                     records = cursor.fetchall()
                     logging.info(smt)
-                    last_record_id = records[-1].get('ID', 0)
+                    try:
+                        last_record_id = records[-1].get('ID', 0)
+                    except Exception as e:
+                        last_record_id = 0
                     logging.info(f"Last processed ID: {_last_id}, rcount: {rcount}, records: {len(records)}, last_record: {last_record_id}")
 
             if not records:
