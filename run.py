@@ -147,7 +147,7 @@ class ParkingDataProcessor:
                     last_id = self._get_last_processed_id()
                     smt = """SELECT * FROM payments_invoices 
                         WHERE ID < {last_id} 
-                        ORDER BY ID DESC 
+                        ORDER BY ID ASC 
                         LIMIT {batch_limit}""".format(last_id=last_id, batch_limit=self.config.batch_limit)
                     cursor.execute(
                         smt
