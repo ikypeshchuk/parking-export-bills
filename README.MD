@@ -70,6 +70,7 @@ Sqllite база містить данні про вже відправлені 
 
 ## 2023-01-01
 UPDATE last_processed_operation SET mysql_id = 1749327, operation_id = 61672525811 WHERE id = 1;
+UPDATE last_processed_operation SET mysql_id = 175313, operation_id = 91612975186 WHERE id = 1;
 
 
 
