@@ -154,6 +154,7 @@ class ParkingDataProcessor:
                     )
                     records = cursor.fetchall()
                     logging.info(smt)
+                    logging.info(f"Last processed ID: {last_id}, rcount: {rcount}, records: {len(records)}, last_record: {records[-1]['ID']}")
 
             if not records:
                 logging.info("No new records to process")
@@ -199,7 +200,7 @@ class ParkingDataProcessor:
             cursor.execute("SELECT mysql_id FROM last_processed_operation WHERE id = 1")
             result = cursor.fetchone()
 
-            return result[0] if result else 740279
+            return result[0] if result else 0
 
     def _mark_batch_as_sent(self, batch: List[JsonDict]) -> None:
         with sqlite3.connect(self.config.sqlite_path) as conn:
