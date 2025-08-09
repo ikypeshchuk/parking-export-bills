@@ -21,3 +21,4 @@ class AppConfig:
     task_interval: int
     db_config: DatabaseConfig
     sqlite_path: Path
+    order_desc: int
