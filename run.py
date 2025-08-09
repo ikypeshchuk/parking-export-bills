@@ -144,17 +144,21 @@ class ParkingDataProcessor:
                 cursorclass=pymysql.cursors.DictCursor
             ) as conn:
                 with conn.cursor() as cursor:
-                    last_id = self._get_last_processed_id()
-                    smt = """SELECT * FROM payments_invoices 
-                        WHERE ID < {last_id} 
-                        ORDER BY ID ASC 
-                        LIMIT {batch_limit}""".format(last_id=last_id, batch_limit=self.config.batch_limit)
-                    cursor.execute(
-                        smt
-                    )
+                    _last_id = self._get_last_processed_id()
+                    if self.config.order_desc:
+                        smt = """SELECT * FROM payments_invoices 
+                            WHERE ID < {last_id} 
+                            ORDER BY ID DESC 
+                            LIMIT {batch_limit}""".format(last_id=_last_id, batch_limit=self.config.batch_limit)
+                    else:
+                        smt = """SELECT * FROM payments_invoices 
+                            WHERE ID > {last_id} 
+                            ORDER BY ID ASC 
+                            LIMIT {batch_limit}""".format(last_id=_last_id, batch_limit=self.config.batch_limit)
+                    cursor.execute(smt)
                     records = cursor.fetchall()
                     logging.info(smt)
-                    logging.info(f"Last processed ID: {last_id}, rcount: {rcount}, records: {len(records)}, last_record: {records[-1]['ID']}")
+                    logging.info(f"Last processed ID: {_last_id}, rcount: {rcount}, records: {len(records)}, last_record: {records[-1]['ID']}")
 
             if not records:
                 logging.info("No new records to process")
@@ -270,7 +274,8 @@ def load_config():
             host=os.getenv('DB_HOST'),
             port=int(os.getenv('DB_PORT', '3306'))
         ),
-        sqlite_path=Path('./db-data') / f"{os.getenv('DB_NAME')}.db"
+        sqlite_path=Path('./db-data') / f"{os.getenv('DB_NAME')}.db",
+        order_desc=int(os.getenv('ORDER_DESC', '0'))
     )
 
 def main():
