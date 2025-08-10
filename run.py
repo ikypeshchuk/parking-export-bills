@@ -194,7 +194,7 @@ class ParkingDataProcessor:
 
                 batch_data = []
 
-            if rcount > 0:
+            if rcount > 0 and self.config.order_desc:
                 return self.process_batch(rcount - 1)
 
         except Exception as e:
